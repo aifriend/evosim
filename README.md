@@ -30,6 +30,8 @@ evosim/                   # Python package
 scripts/
   train.py                # train PPO/SAC on any supported task
   evaluate.py             # evaluate a saved policy, optionally record video
+examples/
+  cartpole_quickstart.py  # CartPole solved in two lines of SB3 code
 tests/
   test_envs.py            # smoke tests for the custom environment
 ```
@@ -45,6 +47,15 @@ pip install -e ".[train,dev]"
 ```
 
 ## Quickstart
+
+Train CartPole (classic control, solves in seconds — the smoke test for the
+whole pipeline):
+
+```bash
+python examples/cartpole_quickstart.py
+# or through the full training pipeline:
+python scripts/train.py --env CartPole-v1 --algo ppo --timesteps 50000
+```
 
 Train a locomotion agent:
 
@@ -77,6 +88,7 @@ python scripts/evaluate.py \
 
 | ID                | Kind         | Description                                   |
 |-------------------|--------------|-----------------------------------------------|
+| `CartPole-v1`     | classic      | Balance a pole on a cart (PPO only, discrete) |
 | `GripperCube-v0`  | manipulation | Custom: gripper grasps and lifts a cube       |
 | `Reacher-v5`      | manipulation | 2-DOF arm reaches a random target             |
 | `HalfCheetah-v5`  | locomotion   | 2D planar runner                              |

@@ -26,7 +26,7 @@ SUCCESS_Z = 0.20
 class GripperCubeEnv(MujocoEnv, utils.EzPickle):
     metadata = {
         "render_modes": ["human", "rgb_array", "depth_array"],
-        "render_fps": 50,
+        "render_fps": 25,
     }
 
     def __init__(self, frame_skip: int = 20, **kwargs):

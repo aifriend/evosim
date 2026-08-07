@@ -19,6 +19,7 @@ from stable_baselines3.common.vec_env import VecNormalize
 ALGOS = {"ppo": PPO, "sac": SAC}
 
 ENV_IDS = [
+    "CartPole-v1",
     "GripperCube-v0",
     "HalfCheetah-v5",
     "Hopper-v5",
@@ -43,6 +44,13 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    if args.algo == "sac":
+        action_space = gym.make(args.env).action_space
+        if not isinstance(action_space, gym.spaces.Box):
+            raise SystemExit(
+                f"SAC requires a continuous action space; "
+                f"{args.env} has {type(action_space).__name__}. Use --algo ppo."
+            )
     run_name = args.run_name or f"{args.algo}_{args.env}_{args.seed}"
     run_dir = Path("runs") / run_name
     run_dir.mkdir(parents=True, exist_ok=True)
