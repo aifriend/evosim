@@ -21,6 +21,7 @@ runs/
 models/
 videos/
 *.mp4
+!frontend/data/videos/*.mp4
 *.zip
 
 # OS / editors

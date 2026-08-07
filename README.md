@@ -107,6 +107,20 @@ python scripts/evaluate.py \
   cube is held above the target height.
 - **Randomization**: the cube's resting position is jittered on every reset.
 
+## Showcase frontend
+
+A static gallery of all simulations (videos + metrics) lives in `frontend/`.
+Regenerate its assets after training and preview locally:
+
+```bash
+python scripts/export_showcase.py          # records videos + metrics
+python -m http.server --directory frontend # then open http://localhost:8000
+```
+
+The frontend is dependency-free (vanilla HTML/CSS/JS) and can be deployed
+as-is to GitHub Pages. The design brief for the frontend team is in
+[docs/frontend-brief.md](docs/frontend-brief.md).
+
 ## Results
 
 _TODO: add learning curves and videos of trained agents here._
