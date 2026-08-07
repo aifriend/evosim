@@ -19,7 +19,7 @@ venv/
 # Training artifacts
 runs/
 models/
-videos/
+/videos/
 *.mp4
 !frontend/data/videos/*.mp4
 *.zip
