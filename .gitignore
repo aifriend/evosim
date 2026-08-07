@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Virtual environments
+.venv/
+venv/
+
+# Tooling
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# Training artifacts
+runs/
+models/
+videos/
+*.mp4
+*.zip
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/

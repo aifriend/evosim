@@ -1,0 +1,45 @@
+<mujoco model="gripper_cube">
+  <compiler angle="radian" coordinate="local"/>
+  <option gravity="0 0 -9.81" timestep="0.002"/>
+
+  <default>
+    <joint damping="1"/>
+    <geom condim="3" friction="1 0.5 0.5"/>
+  </default>
+
+  <worldbody>
+    <light diffuse=".5 .5 .5" pos="0 0 3" dir="0 0 -1"/>
+    <geom name="floor" type="plane" size="1 1 0.1" rgba="0.8 0.8 0.8 1"/>
+
+    <!-- Table the cube rests on (top surface at z = 0.04) -->
+    <body name="table" pos="0 0 0.02">
+      <geom name="table_top" type="box" size="0.2 0.2 0.02" rgba="0.6 0.4 0.2 1"/>
+    </body>
+
+    <!-- Manipuland: a small cube with a free joint -->
+    <body name="cube" pos="0 0 0.055">
+      <freejoint name="cube_joint"/>
+      <geom name="cube" type="box" size="0.015 0.015 0.015" rgba="0.9 0.2 0.2 1" mass="0.05"/>
+    </body>
+
+    <!-- Gripper: vertical slide for lifting, two opposed finger slides for grasping -->
+    <body name="gripper" pos="0 0 0.25">
+      <joint name="slide_z" type="slide" axis="0 0 1" range="0.05 0.35"/>
+      <geom name="palm" type="box" size="0.03 0.03 0.01" rgba="0.2 0.2 0.9 1" contype="0" conaffinity="0"/>
+      <body name="finger_l" pos="0 0.022 -0.01">
+        <joint name="finger_l" type="slide" axis="0 -1 0" range="0 0.018"/>
+        <geom name="finger_l_geom" type="box" size="0.005 0.008 0.02" pos="0 0.008 -0.01" rgba="0.2 0.6 0.9 1"/>
+      </body>
+      <body name="finger_r" pos="0 -0.022 -0.01">
+        <joint name="finger_r" type="slide" axis="0 1 0" range="0 0.018"/>
+        <geom name="finger_r_geom" type="box" size="0.005 0.008 0.02" pos="0 -0.008 -0.01" rgba="0.2 0.6 0.9 1"/>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <position name="lift" joint="slide_z" kp="2000" ctrllimited="true" ctrlrange="0.05 0.35"/>
+    <position name="close_l" joint="finger_l" kp="200" ctrllimited="true" ctrlrange="0 0.018"/>
+    <position name="close_r" joint="finger_r" kp="200" ctrllimited="true" ctrlrange="0 0.018"/>
+  </actuator>
+</mujoco>
