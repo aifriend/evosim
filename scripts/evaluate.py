@@ -17,6 +17,18 @@ from stable_baselines3 import PPO, SAC
 from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
 
 
+def algo_name(model_path: Path) -> str:
+    """Return "SAC" or "PPO" from the run directory name (<algo>_<env>_<seed>).
+
+    Models are saved as <run>/final_model.zip or <run>/best/best_model.zip, so
+    the algorithm is read from whichever parent directory starts with "sac_".
+    """
+    for parent in model_path.parents:
+        if parent.name.lower().startswith("sac_"):
+            return "SAC"
+    return "PPO"
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--env", required=True)
@@ -43,14 +55,18 @@ def main() -> None:
 
     vec_path = args.vecnormalize
     if vec_path is None:
-        candidate = args.model.parent / "vecnormalize.pkl"
-        vec_path = candidate if candidate.exists() else None
+        # best/best_model.zip keeps its stats one level up, next to final_model.zip
+        for folder in (args.model.parent, args.model.parent.parent):
+            candidate = folder / "vecnormalize.pkl"
+            if candidate.exists():
+                vec_path = candidate
+                break
     if vec_path is not None:
         env = VecNormalize.load(str(vec_path), env)
         env.training = False
         env.norm_reward = False
 
-    model_cls = SAC if "sac" in args.model.parent.name.lower() else PPO
+    model_cls = SAC if algo_name(args.model) == "SAC" else PPO
     model = model_cls.load(str(args.model), env=env)
 
     returns = []

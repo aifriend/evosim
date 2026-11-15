@@ -50,6 +50,18 @@ KINDS = {
 }
 
 
+def algo_name(model_path: Path) -> str:
+    """Return "SAC" or "PPO" from the run directory name (<algo>_<env>_<seed>).
+
+    Models are saved as <run>/final_model.zip or <run>/best/best_model.zip, so
+    the algorithm is read from whichever parent directory starts with "sac_".
+    """
+    for parent in model_path.parents:
+        if parent.name.lower().startswith("sac_"):
+            return "SAC"
+    return "PPO"
+
+
 def slugify(env_id: str) -> str:
     slug = re.sub(r"-v\d+$", "", env_id).lower()
     return re.sub(r"[^a-z0-9]+", "-", slug).strip("-")
@@ -76,7 +88,7 @@ def record_video(env_id: str, model_path, vec_path, slug: str) -> str:
     vn = None
     model = None
     if model_path is not None:
-        cls = SAC if "sac" in model_path.parent.name.lower() else PPO
+        cls = SAC if algo_name(model_path) == "SAC" else PPO
         model = cls.load(str(model_path))
         if vec_path is not None:
             vn = VecNormalize.load(str(vec_path), DummyVecEnv([lambda: gym.make(env_id)]))
@@ -121,7 +133,7 @@ def mean_return(env_id: str, model_path, vec_path) -> float:
         env = VecNormalize.load(str(vec_path), env)
         env.training = False
         env.norm_reward = False
-    cls = SAC if model_path and "sac" in model_path.parent.name.lower() else PPO
+    cls = SAC if model_path and algo_name(model_path) == "SAC" else PPO
     model = cls.load(str(model_path), env=env) if model_path else None
 
     returns = []
@@ -164,7 +176,7 @@ def main() -> None:
         model_path, vec_path = find_model(env_id)
         policy = "random (untrained)"
         if model_path is not None:
-            policy = "SAC" if "sac" in model_path.parent.name.lower() else "PPO"
+            policy = algo_name(model_path)
 
         print(f"[{env_id}] recording video (policy: {policy}) ...")
         video = record_video(env_id, model_path, vec_path, slug)
