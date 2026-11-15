@@ -66,7 +66,7 @@ class GripperCubeEnv(MujocoEnv, utils.EzPickle):
         qpos = self.init_qpos.copy()
         qvel = self.init_qvel.copy()
         # Randomize the cube's resting position slightly for robustness.
-        qpos[3:5] += self.np_random.uniform(-0.02, 0.02, size=2)
+        qpos[0:2] += self.np_random.uniform(-0.02, 0.02, size=2)
         self.set_state(qpos, qvel)
         return self._get_obs()
 
